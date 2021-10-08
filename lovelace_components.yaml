@@ -1,0 +1,5 @@
+  resources:
+    - url: "/www/community/numberbox-card/numberbox-card.js"
+      type: module
+    - url: "/www/community/numberbox-card/slider-entity-row.js"
+      type: module

@@ -1,0 +1,154 @@
+kitchen_camera:
+  camera:
+    - platform: generic
+      name: kitchen_camera
+      still_image_url: https://192.168.31.239/dms
+      stream_source: rtsp://192.168.31.239:554/live1.sdp
+      username: "fhome"
+      password: !secret dlink_kitchen_camera_fhome_password
+
+  input_boolean:
+    # Сенсоры
+    kitchen_motion_camera:
+      name: Движение в кухне (камера)
+      icon: mdi:motion-sensor
+    kitchen_sound_camera:
+      name: Звук в кухне (камера)
+      icon: mdi:account-voice
+    # Переключатели состояния датчиков на камере
+    kitchen_camera_sound_detection:
+      name: Регистрация звука (камера кухня)
+    kitchen_camera_motion_detection:
+      name: Регистрация движения (камера кухня)
+
+  rest_command:
+    # Включение датчика движения
+    kitchen_camera_motion_sensor_turn_on:
+      url: "http://192.168.31.239/vb.htm?language=ie&motionenable=1&pirenable=0&motioncvalue=85"
+      method: GET
+      username: admin
+      password: !secret dlink_kitchen_camera_admin_password
+    # Выключение датчика движения
+    kitchen_camera_motion_sensor_turn_off:
+      url: "http://192.168.31.239/vb.htm?language=ie&motionenable=0&pirenable=0&motioncvalue=85"
+      method: GET
+      username: admin
+      password: !secret dlink_kitchen_camera_admin_password
+    # Включение датчика звука
+    kitchen_camera_sound_sensor_turn_on:
+      url: "http://192.168.31.239/vb.htm?language=ie&ensounddetection=1&soundvolume=80"
+      method: GET
+      username: admin
+      password: !secret dlink_kitchen_camera_admin_password
+    # Выключение датчика звука
+    kitchen_camera_sound_sensor_turn_off:
+      url: "http://192.168.31.239/vb.htm?language=ie&ensounddetection=0&soundvolume=80"
+      method: GET
+      username: admin
+      password: !secret dlink_kitchen_camera_admin_password
+
+  automation:
+    - alias: Управление сенсором движения. Камера (кухня)
+      initial_state: true
+      trigger:
+        platform: state
+        entity_id: input_boolean.kitchen_camera_motion_detection
+      action:
+        service: >
+          {% if trigger.to_state.state == "on" %}
+            rest_command.kitchen_camera_motion_sensor_turn_on
+          {% elif trigger.to_state.state == "off" %}
+            rest_command.kitchen_camera_motion_sensor_turn_off
+          {% endif %}
+
+    - alias: Управление сенсором звука. Камера (кухня)
+      initial_state: true
+      trigger:
+        platform: state
+        entity_id: input_boolean.kitchen_camera_sound_detection
+      action:
+        service: >
+          {% if trigger.to_state.state == "on" %}
+            rest_command.kitchen_camera_sound_sensor_turn_on
+          {% elif trigger.to_state.state == "off" %}
+            rest_command.kitchen_camera_sound_sensor_turn_off
+          {% endif %}
+
+    - id: kitchen_camera_motion_notify
+      alias: Отправка фотографии камеры кухни при фиксации движения
+      initial_state: false
+      trigger:
+        platform: state
+        entity_id: input_boolean.kitchen_motion_camera
+        from: "off"
+        to: "on"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: "Движение в кухне. Фото:"
+        - service: notify.telegram_bot
+          data:
+            message: ""
+            data:
+              photo:
+                url: "http://192.168.31.239/dms"
+                username: "fhome"
+                password: !secret dlink_kitchen_camera_fhome_password
+
+    # Telegram
+    - id: send_kitchen_camera_photo_to_telegram
+      alias: Отправка фото с кухонной камеры в телеграм
+      trigger:
+        platform: event
+        event_type:
+          - telegram_callback
+          - telegram_command
+        event_data:
+          command: "/get_kitchen_camera_photo"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: "Фото с камеры"
+            data:
+              photo:
+                url: "http://192.168.31.239/dms"
+                username: "fhome"
+                password: !secret dlink_kitchen_camera_fhome_password
+              inline_keyboard:
+                - "Повторить:/get_kitchen_camera_photo"
+
+    - id: send_kitchen_camera_sensors_state_to_telegram
+      alias: Отправка состояния сенсоров камеры в телеграм (Кухня)
+      trigger:
+        platform: event
+        event_type: telegram_callback
+        event_data:
+          command: "/get_kitchen_camera_sensors_state"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: >
+              Регистрация событий:
+                - движения: {{ states("input_boolean.kitchen_camera_motion_detection") }}
+                - звука: {{ states("input_boolean.kitchen_camera_sound_detection") }}
+              Состояние датчиков камеры:
+                - движения: {{ states("input_boolean.kitchen_motion_camera") }}
+                - звука: {{ states("input_boolean.kitchen_sound_camera") }}
+
+    - id: kitchen_camera_telegram_start
+      alias: Меню управления камерой (Кухня)
+      trigger:
+        platform: event
+        event_type:
+          - telegram_command
+          - telegram_callback
+        event_data:
+          command: "/kitchen_camera"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: "Команды камеры (Кухня)"
+            data:
+              inline_keyboard:
+                - "Фотография:/get_kitchen_camera_photo"
+                - "Датчики:/get_kitchen_camera_sensors_state"

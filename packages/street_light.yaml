@@ -1,0 +1,174 @@
+street_light:
+  timer:
+    kitchen_motion_timer:
+      duration: "00:03:00"
+      name: "Таймер движения на кухне"
+
+  automation:
+    - id: vladimirfriptu_back_home_parking_light
+      alias: Включение света перед кухней когда я возвращаюсь домой
+      initial_state: true
+      trigger:
+        platform: state
+        entity_id: person.vladimir_friptu
+        from: "not_home"
+        to: "home"
+      condition: |
+        {{ is_state("sun.sun", "below_horizon") }}
+      action:
+        - service: light.turn_on
+          target:
+            entity_id: light.street_kitchen_light
+        - service: automation.turn_off
+          target:
+            entity_id: automation.vykliuchenie_sveta_pered_kukhnei_kogda_nochiu_na_kukhne_otsutstvuet_dvizhenie
+        - service: notify.telegram_bot
+          data:
+            message: "С возвращением домой, хозяин"
+
+    - id: kitchen_night_motion_on
+      alias: Включение света перед кухней когда ночью на кухне движение
+      initial_state: true
+      trigger:
+        platform: state
+        entity_id: input_boolean.kitchen_motion_camera
+        from: "off"
+        to: "on"
+      condition: |
+        {{ is_state("sun.sun", "below_horizon") and is_state("timer.kitchen_motion_timer", "idle") and is_state("light.street_kitchen_light", "off") }}
+      action:
+        - service: light.turn_on
+          target:
+            entity_id: light.street_kitchen_light
+        - service: timer.start
+          target:
+            entity_id: timer.kitchen_motion_timer
+
+    - id: kitchen_night_motion_off
+      alias: Выключение света перед кухней по таймеру
+      initial_state: true
+      trigger:
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.kitchen_motion_timer
+      condition: |
+        {{ is_state("input_boolean.kitchen_motion_camera", "off") }}
+      action:
+        - service: light.turn_off
+          target:
+            entity_id: light.street_kitchen_light
+
+    - id: kitchen_night_motion_restart_timer
+      alias: Перезапуск таймера отключение света перед кухней по движению
+      initial_state: true
+      trigger:
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.kitchen_motion_timer
+      condition: |
+        {{ is_state("input_boolean.kitchen_motion_camera", "on") }}
+      action:
+        - service: timer.start
+          target:
+            entity_id: timer.kitchen_motion_timer
+
+    # Автоматизация света фасада дома
+    - id: turn_on_front_light_after_evening
+      alias: Включение света фасада при заходе солнца
+      initial_state: true
+      trigger:
+        - platform: sun
+          event: sunset
+      action:
+        - service: light.turn_on
+          entity_id: light.street_front_ligth
+
+    - id: turn_off_front_light_after_morning
+      alias: Выключение света на фасаде дома перед восходом солнца
+      initial_state: true
+      trigger:
+        - platform: sun
+          event: sunrise
+      action:
+        - service: light.turn_off
+          entity_id: light.street_front_ligth
+
+    # Telegram navigation
+    - id: kitchen_street_light_turn_on
+      alias: Включение света перед кухней
+      trigger:
+        platform: event
+        event_type:
+          - telegram_command
+          - telegram_callback
+        event_data:
+          command: "/kitchen_street_light_turn_on"
+      condition: "{{ is_state('light.street_kitchen_light', 'off') }}"
+      action:
+        - service: light.turn_on
+          target:
+            entity_id: light.street_kitchen_light
+        - service: notify.telegram_bot
+          data:
+            message: "Свет включен"
+            data:
+              inline_keyboard:
+                - "Выключить:/kitchen_street_light_turn_off"
+
+    - id: kitchen_street_light_turn_off
+      alias: Выключение света перед кухней
+      trigger:
+        platform: event
+        event_type:
+          - telegram_command
+          - telegram_callback
+        event_data:
+          command: "/kitchen_street_light_turn_off"
+      condition: "{{ is_state('light.street_kitchen_light', 'on') }}"
+      action:
+        - service: switch.turn_off
+          target:
+            entity_id: light.street_kitchen_light
+        - service: notify.telegram_bot
+          data:
+            message: "Свет выключен"
+            data:
+              inline_keyboard:
+                - "Включить:/kitchen_street_light_turn_on"
+
+    - id: street_light_telegram_start
+      alias: Меню управления освещением двора
+      trigger:
+        platform: event
+        event_type: telegram_text
+        event_data:
+          text: "Освещение улицы"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: "Доступные светильники"
+            data:
+              inline_keyboard:
+                - "Кухня:/kitchen_street_light"
+
+    - id: telegram_kitchen_street_light_menu
+      alias: Меню управления освещением перед кухней
+      trigger:
+        platform: event
+        event_type:
+          - telegram_command
+          - telegram_callback
+        event_data:
+          command: "/kitchen_street_light"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: >
+              Управление освещением перед кухней
+              Сейчас свет: {% if is_state("light.street_kitchen_light", "on")%}включен{% else %}выключен{% endif %}
+            data:
+              inline_keyboard:
+                - "Включить:/kitchen_street_light_turn_on"
+                - "Выключить:/kitchen_street_light_turn_off"

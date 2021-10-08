@@ -1,0 +1,53 @@
+sleep_room_light:
+  script:
+    sleep_room_root_light_command:
+      alias: Запуск команды для люстры в спальне
+      fields:
+        command:
+          description: Название IR команды
+          example: power
+      sequence:
+        - service: remote.send_command
+          target:
+            entity_id: remote.sleep_room_ir_remote_remote
+          data:
+            device: "sleep_room_light"
+            command: "{{ command }}"
+
+    sleep_room_garland_wall_command:
+      alias: Запуск команды для шторы гирлянды
+      fields:
+        command:
+          description: Название IR команды
+          example: "power_on"
+      sequence:
+        - service: remote.send_command
+          target:
+            entity_id: remote.sleep_room_ir_remote_remote
+          data:
+            device: "garland_wall"
+            command: "{{ command }}"
+
+  automation:
+    - id: turn_on_sleep_room_garland_wall_at_sunset
+      alias: Включение гирлянды в спальне по заходу солнца
+      initial_state: true
+      trigger:
+        - platform: sun
+          event: sunset
+      action:
+        - service: script.sleep_room_garland_wall_command
+          data:
+            command: "power_on"
+
+    - id: turn_off_sleep_room_garland_wall_at_sunrise
+      alias: Выключение гирлянды в спальне на рассвете
+      initial_state: true
+      trigger:
+        - platform: sun
+          event: sunrise
+      action:
+        - service: script.sleep_room_garland_wall_command
+          data:
+            command: "power_off"
+

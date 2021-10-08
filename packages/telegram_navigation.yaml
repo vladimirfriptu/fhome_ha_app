@@ -1,0 +1,78 @@
+telegram_navigation:
+  automation:
+    - alias: telegram_camera_start
+      initial_state: true
+      trigger:
+        platform: event
+        event_type: telegram_text
+        event_data:
+          text: "Камера"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: Доступные камеры
+            data:
+              inline_keyboard:
+                - "Кухня:/kitchen_camera"
+                - "Детская:/children_room_camera"
+
+    - alias: telegram_kitchen_start
+      initial_state: true
+      trigger:
+        platform: event
+        event_type: telegram_text
+        event_data:
+          text: "Кухня"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: Доступно
+            data:
+              inline_keyboard:
+                - "Камера:/kitchen_camera"
+                - "Освещение улицы:/kitchen_street_light"
+
+    - alias: telegram_children_start
+      initial_state: true
+      trigger:
+        platform: event
+        event_type: telegram_text
+        event_data:
+          text: "Детская"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: Доступно
+            data:
+              inline_keyboard:
+                - "Камера:/children_room_camera"
+
+    - alias: telegram_menu
+      initial_state: true
+      trigger:
+        platform: event
+        event_type: telegram_text
+        event_data:
+          text: "Меню"
+      action:
+        - service: notify.telegram_bot
+          data:
+            message: "Управление умным домом"
+            data:
+              keyboard:
+                - "Камера"
+                - "Кухня"
+                - "Освещение улицы"
+                - "Детская"
+
+    - alias: finish_parking
+      initial_state: true
+      trigger:
+        platform: event
+        event_type: telegram_command
+        event_data:
+          command: "/finish_parking"
+      action:
+        - service: automation.turn_on
+          target:
+            entity_id: automation.vykliuchenie_sveta_pered_kukhnei_kogda_nochiu_na_kukhne_otsutstvuet_dvizhenie

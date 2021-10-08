@@ -1,0 +1,97 @@
+boiler_engine:
+  sensor:
+    - platform: mqtt
+      state_topic: "boiler_engine/temperature"
+      device_class: temperature
+      icon: mdi:water
+      name: "Current boiler water temperature"
+      unique_id: "current_boiler_temp"
+      unit_of_measurement: "℃"
+
+    - platform: mqtt
+      state_topic: "boiler_engine/position"
+      icon: mdi:fire
+      name: "Current boiler engine position"
+      unique_id: "current_boiler_engine_position"
+      unit_of_measurement: "%"
+
+  input_number:
+    boiler_drawer_position:
+      name: "Boiler drawer position"
+      initial: 0
+      min: 0
+      max: 100
+      unit_of_measurement: "%"
+      icon: "mdi:fire"
+      mode: slider
+    boiler_water_temp_value:
+      name: "Boiler temp value"
+      initial: 50
+      min: 40
+      max: 80
+      unit_of_measurement: "℃"
+      icon: "mdi:water"
+      mode: slider
+    boiler_controller_tick:
+      name: "Boiler controller tick"
+      initial: 30
+      min: 5
+      max: 600
+      unit_of_measurement: "sec"
+      icon: mdi:timer
+
+  script:
+    set_auto_boiler_engine_mode:
+      alias: Включение режима авто поддержания температуры котла
+      sequence:
+        - service: mqtt.publish
+          data:
+            topic: "boiler_engine/single_command"
+            payload: auto_engine_mode
+    reset_boiler_engine:
+      alias: Сброс позиции угла поворота мотора
+      sequence:
+        - service: mqtt.publish
+          data:
+            topic: "boiler_engine/single_command"
+            payload: reset_current_engine_position
+
+  automation:
+    - id: change_boiler_drawer_position
+      initial_state: true
+      alias: Ручное управление заслонкой котла
+      trigger:
+        platform: state
+        entity_id: input_number.boiler_drawer_position
+      action:
+        - service: mqtt.publish
+          data:
+            topic: "boiler_engine/manual_run"
+            payload_template: |
+              {{ states("input_number.boiler_drawer_position") | int }}
+
+    - id: change_need_boiler_water_temp
+      initial_state: true
+      alias: Изменение желаемой температуры теплоносителя котла
+      trigger:
+        platform: state
+        entity_id: input_number.boiler_water_temp_value
+      action:
+        - service: mqtt.publish
+          data:
+            topic: "boiler_engine/set_temp"
+            payload_template: |
+              {{ states("input_number.boiler_water_temp_value") | int }}
+
+    - id: change_boiler_engine_tick
+      initial_state: true
+      alias: Время одного тика контроллера котла
+      trigger:
+        platform: state
+        entity_id: input_number.boiler_controller_tick
+      action:
+        - service: mqtt.publish
+          data:
+            topic: "boiler_engine/set_tick_delay"
+            payload_template: |
+              {{ states("input_number.boiler_controller_tick") }}

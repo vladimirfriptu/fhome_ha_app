@@ -1,0 +1,6 @@
+- platform: switch
+  name: street_kitchen_light
+  entity_id: switch.1000c7609c
+- platform: switch
+  name: street_front_ligth
+  entity_id: switch.1000c70214

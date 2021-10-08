@@ -1,0 +1,32 @@
+water_controll:
+  switch:
+    - platform: tapo_p100_control
+      ip_address: 192.168.31.235
+      email: !secret tapo_email
+      password: !secret tapo_password
+
+  automation:
+    - id: turn_off_water_engine_when_home_is_empty
+      alias: Выключние насоса когда дома никого нет
+      trigger:
+        platform: state
+        entity_id: sensor.home_is_empty
+        from: "False"
+        to: "True"
+      action:
+        - service: switch.turn_off
+          target:
+            entity_id: switch.nasos_vodosnabzheniia
+
+    - id: turn_on_water_engine_when_we_back_home
+      alias: Включение насоса когда кто то вернулся домой
+      trigger:
+        platform: state
+        entity_id: sensor.home_is_empty
+        from: "True"
+        to: "False"
+      action:
+        - service: switch.turn_on
+          target:
+            entity_id: switch.nasos_vodosnabzheniia
+

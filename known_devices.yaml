@@ -1,0 +1,246 @@
+wifes_s6_lite_tablet:
+  name: Планшет Наташки
+  mac: D6:56:EB:8A:B6:FD
+  icon: mdi:tablet-android
+  track: true
+
+wifes_s6_lite_tablet_2:
+  name: Планшет Наташки (2)
+  mac: 42:EC:42:C0:C5:0F
+  icon: mdi:tablet-android
+  track: true
+
+kitchen_camera:
+  name: Камера (кухня)
+  mac: B0:C5:54:16:A2:DE
+  icon: mdi:cctv
+  track: true
+
+children_room_camera:
+  name: Камера (детская)
+  mac: B2:EC:42:16:A2:DD
+  icon: mdi:cctv
+  track: true
+
+boiler_room_camera:
+  name: Камера (котельная)
+  mac: D8:07:B6:16:FE:09
+  icon: mdi:cctv
+  track: true
+
+boiler_air_supply_relay:
+  name: Релле подачи воздуха в котел
+  mac: 40:F5:20:2E:2F:EF
+  icon: mdi:air-conditioner
+  track: true
+
+andersen_work_laptop:
+  name: Рабочий ноутбук Andersen
+  mac: 40:9F:38:96:C3:31
+  icon: mdi:laptop
+  track: true
+
+andersen_work_laptop_2:
+  name: Рабочий ноутбук Andersen (2)
+  mac: B2:EC:42:96:C3:31
+  icon:
+  picture:
+  track: true
+
+vladimirfriptu_phone:
+  name: Мой телефон
+  mac: A4:45:19:0C:EA:49
+  icon: mdi:cellphone
+  track: true
+
+vladimirfriptu_phone_2:
+  name: Мой телефон (2)
+  mac: B2:EC:42:0C:EA:49
+  icon: mdi:cellphone
+  track: true
+
+xiaomi_gateway:
+  name: Маршрутизатор Xiaomi
+  mac: 50:EC:50:C6:C3:8C
+  icon: mdi:router-network
+  track: true
+
+street_kitchen_light_relay:
+  name: Релле освещения улицы перед кухней
+  mac: C4:4F:33:C1:54:A9
+  icon: mdi:coach-lamp
+  track: true
+
+raspberrypi:
+  name: raspberrypi
+  mac: DC:A6:32:78:D6:1E
+  icon: mdi:raspberry-pi
+  track: false
+
+corridor_repeater_tplink_re205:
+  name: WIFI Репитер TPLink RE205
+  mac: B2:EC:42:B1:EC:42
+  icon: mdi:router-wireless
+  track: true
+
+boiler_temp_supply_relay:
+  name: Релле блока управления котлом
+  mac: 4C:11:AE:00:B3:87
+  icon: mdi:water-boiler
+  track: true
+
+wifes_phone:
+  name: Телефон Наташки
+  mac: 4A:6E:50:7E:5E:30
+  icon: mdi:cellphone
+  track: true
+
+wifes_phone_2:
+  name: Телефон Наташки (2)
+  mac: 72:EC:42:5E:30:52
+  icon: mdi:cellphone
+  track: true
+
+evo_work_laptop:
+  name: Рабочий ноутбук EVO
+  mac: B2:EC:42:D8:5F:F9
+  icon: mdi:laptop
+  track: true
+
+ulia_phone:
+  name: Телефон Юля Аникеева
+  mac: 26:00:CC:84:BB:E2
+  icon: mdi:cellphone
+  track: true
+
+ulia_tablet:
+  name: Планшет Юля Аникеева
+  mac: 3E:10:92:77:DC:F9
+  icon: mdi:tablet
+
+
+tapo_smartplug:
+  name: Tapo_SmartPlug
+  mac: E4:C3:2A:1A:AD:98
+  icon:
+  picture:
+  track: true
+
+tapo_smartplug_2:
+  name: Tapo_SmartPlug
+  mac: E4:C3:2A:1A:A2:DC
+  icon:
+  picture:
+  track: true
+
+20_78_f0_a9_6c_c2:
+  name: 20_78_f0_a9_6c_c2
+  mac: 20:78:F0:A9:6C:C2
+  icon:
+  picture:
+  track: true
+
+42_3f_8c_b1_ec_41:
+  name: 42_3f_8c_b1_ec_41
+  mac: 42:3F:8C:B1:EC:41
+  icon:
+  picture:
+  track: true
+
+cc_d9_ac_d8_5f_f9:
+  name: cc_d9_ac_d8_5f_f9
+  mac: CC:D9:AC:D8:5F:F9
+  icon:
+  picture:
+  track: true
+
+b2_ec_42_4f_d2_04:
+  name: b2_ec_42_4f_d2_04
+  mac: B2:EC:42:4F:D2:04
+  icon:
+  picture:
+  track: true
+
+4c_f2_02_3a_94_ad:
+  name: 4c_f2_02_3a_94_ad
+  mac: 4C:F2:02:3A:94:AD
+  icon:
+  picture:
+  track: true
+
+ea_c7_60_2d_30_e2:
+  name: ea_c7_60_2d_30_e2
+  mac: EA:C7:60:2D:30:E2
+  icon:
+  picture:
+  track: true
+
+f4_71_90_c1_fe_b4:
+  name: f4_71_90_c1_fe_b4
+  mac: F4:71:90:C1:FE:B4
+  icon:
+  picture:
+  track: true
+
+80_45_dd_79_60_b7:
+  name: 80_45_dd_79_60_b7
+  mac: 80:45:DD:79:60:B7
+  icon:
+  picture:
+  track: true
+
+b2_ec_42_79_60_b7:
+  name: b2_ec_42_79_60_b7
+  mac: B2:EC:42:79:60:B7
+  icon:
+  picture:
+  track: true
+
+fa_2e_a7_12_f1_a4:
+  name: fa_2e_a7_12_f1_a4
+  mac: FA:2E:A7:12:F1:A4
+  icon:
+  picture:
+  track: true
+
+72_ec_42_4c_b7_67:
+  name: 72_ec_42_4c_b7_67
+  mac: 72:EC:42:4C:B7:67
+  icon:
+  picture:
+  track: true
+
+98_cd_ac_23_f4_be:
+  name: 98_cd_ac_23_f4_be
+  mac: 98:CD:AC:23:F4:BE
+  icon:
+  picture:
+  track: true
+
+a4_45_19_49_15_1a:
+  name: a4_45_19_49_15_1a
+  mac: A4:45:19:49:15:1A
+  icon:
+  picture:
+  track: true
+
+a2_ec_42_41_5d_84:
+  name: a2_ec_42_41_5d_84
+  mac: A2:EC:42:41:5D:84
+  icon:
+  picture:
+  track: true
+
+c4_4f_33_c5_3e_33:
+  name: c4_4f_33_c5_3e_33
+  mac: C4:4F:33:C5:3E:33
+  icon:
+  picture:
+  track: true
+
+b2_ec_42_c5_3e_33:
+  name: b2_ec_42_c5_3e_33
+  mac: B2:EC:42:C5:3E:33
+  icon:
+  picture:
+  track: true

@@ -1,0 +1,37 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+homeassistant:
+  packages: !include_dir_merge_named packages/
+
+frontend:
+  themes: !include_dir_merge_named themes/
+
+light: !include includes/light.yaml
+
+device_tracker:
+  - platform: xiaomi
+    host: 192.168.31.1
+    password: 1234qwer
+
+lovelace: !include lovelace_components.yaml
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+sensor: !include includes/sensor.yaml
+
+recorder:
+  db_url: !secret db_link
+  purge_keep_days: 3
+
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_bot_token
+    parse_mode: html
+    allowed_chat_ids:
+      - 399989059
+
+notify: !include includes/notify.yaml

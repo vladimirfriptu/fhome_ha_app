@@ -1,0 +1,3 @@
+- name: telegram_bot
+  platform: telegram
+  chat_id: 399989059

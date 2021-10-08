@@ -1,0 +1,23 @@
+hallway_light:
+  automation:
+    - id: turn_on_hallway_light_by_time
+      alias: Включение подсветки прихожей по времени
+      initial_state: true
+      trigger:
+        - platform: time
+          at: "22:00:00"
+      action:
+        - service: light.turn_on
+          target:
+            entity_id: light.xiaomi_gateway_light
+
+    - id: turn_off_hallway_light_at_sunrise
+      alias: Включение подсветки прихожей по времени
+      initial_state: true
+      trigger:
+        - platform: sun
+          event: sunrise
+      action:
+        - service: light.turn_off
+          target:
+            entity_id: light.xiaomi_gateway_light

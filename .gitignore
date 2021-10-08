@@ -1,0 +1,8 @@
+./secrets.yaml
+home-assistant.log
+.storage
+.HA_VERSION
+ftpsync.settings
+home-assistant.log.1
+home-assistant_v2.db
+secrets.yaml
